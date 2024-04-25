@@ -91,9 +91,30 @@ std::set<std::string> boggle(const std::set<std::string>& dict, const std::set<s
 	return result;
 }
 
-bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>& prefix, const std::vector<std::vector<char> >& board, 
-								   std::string word, std::set<std::string>& result, unsigned int r, unsigned int c, int dr, int dc)
-{
-//add your solution here!
+bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>& prefix, 
+                  const std::vector<std::vector<char>>& board, std::string word, 
+                  std::set<std::string>& result, unsigned int r, unsigned int c, 
+                  int dr, int dc) {
+    // Check boundaries
+    if (r < 0 || r >= board.size() || c < 0 || c >= board.size()) {
+        return false;  // Out of bounds
+    }
 
+    word += board[r][c]; // Append the current character to the word
+
+    // If it is a valid word and not already in results
+    if (dict.count(word) && !result.count(word)) {
+        result.insert(word);
+    }
+
+    // Check if the current sequence is a valid prefix
+    if (!prefix.count(word)) {
+        return false;  // Not a valid prefix, stop exploration
+    }
+
+    // Continue exploring neighboring cells
+    boggleHelper(dict, prefix, board, word, result, r + dr, c + dc, dr, dc);
+
+    return true;
 }
+
