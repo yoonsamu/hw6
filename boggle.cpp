@@ -95,26 +95,33 @@ bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>
                   const std::vector<std::vector<char>>& board, std::string word, 
                   std::set<std::string>& result, unsigned int r, unsigned int c, 
                   int dr, int dc) {
-    // Check boundaries
-    if (r < 0 || r >= board.size() || c < 0 || c >= board.size()) {
-        return false;  // Out of bounds
+    //add your solution here!
+    // Return false if coordinates are out of the board's boundary.
+    // Out of bounds check
+    if (r >= board.size() || c >= board.size()) {
+        return false;
     }
 
-    word += board[r][c]; // Append the current character to the word
+    // Append the character at the current position to form the new word
+    word += board[r][c];
 
-    // If it is a valid word and not already in results
-    if (dict.count(word) && !result.count(word)) {
+    // If the new word is not a valid prefix, stop the recursion
+    if (!prefix.count(word)) {
+        return false;
+    }
+
+    // Check if it's a valid word
+    bool isWord = dict.count(word) > 0;
+
+    // Continue in the same direction
+    bool foundLongerWord = boggleHelper(dict, prefix, board, word, result, r + dr, c + dc, dr, dc);
+
+    // Only add the word to results if it's valid and no longer word was found along this path
+    if (isWord && !foundLongerWord) {
         result.insert(word);
     }
 
-    // Check if the current sequence is a valid prefix
-    if (!prefix.count(word)) {
-        return false;  // Not a valid prefix, stop exploration
-    }
+    // Return true if a valid word was found in this path or further
+    return isWord || foundLongerWord;
 
-    // Continue exploring neighboring cells
-    boggleHelper(dict, prefix, board, word, result, r + dr, c + dc, dr, dc);
-
-    return true;
-}
-
+  }
