@@ -97,29 +97,21 @@ bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>
                   int dr, int dc) {
     //add your solution here!
     // Check for out-of-bounds access on the board
-    if (r >= board.size() || c >= board.size()) {
-        return false;
+    if (r >= board.size() || c >= board.size()){
+    return false;  // Return false if the indices are out of bounds.
     }
 
-    // Append current character to the forming word
-    word += board[r][c];
+    word += board[r][c];  // Append the current character to the word.
 
-    // Stop if the current word is not a valid prefix
-    if (!prefix.count(word)) {
-        return false;
+    bool isAWord = dict.find(word) != dict.end();  // Check if the word exists in the dictionary.
+
+    // Recursive call to explore adjacent cells.
+    bool isFound = boggleHelper(dict, prefix, board, word, result, r + dr, c + dc, dr, dc);
+
+    if (!isFound && isAWord) {
+        result.insert(word);  // If the word is valid and not found, add to result.
+        return true;
     }
 
-    // Check if the current word is a valid word in the dictionary
-    bool isAWord = dict.count(word) > 0;
-
-    // Recursive call to check further in the given direction
-    bool foundWord = boggleHelper(dict, prefix, board, word, result, r + dr, c + dc, dr, dc);
-
-    // Add word to results if it's valid and no further words are found
-    if (isAWord && !foundWord) {
-        result.insert(word);
-    }
-
-    // Return true if a valid word is found in this path
-    return isAWord || foundWord;
+    return isFound;  // Return the result of the recursive search.
 }
